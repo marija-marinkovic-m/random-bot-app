@@ -1,33 +1,44 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-
-/**
- *
- * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
- * @param {Object} event - API Gateway Lambda Proxy Input Format
- *
- * Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
- * @returns {Object} object - API Gateway Lambda Proxy Output Format
- *
- */
+import { parse } from 'querystring';
+import { slashCommandHandle } from './utils/slack/slashCommand';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
-        const joke = await fetch('https://icanhazdadjoke.com', {
-            headers: { accept: 'text/plain' },
-        });
-        const jokeText = await joke.text();
+        console.log(event.body);
+        // @todo: uncomment this
+        // const valid = verifySlackRequest(event);
+
+        // if (!valid) {
+        //     console.error('invalid request');
+
+        //     return {
+        //         statusCode: 400,
+        //         body: 'invalid request',
+        //     };
+        // }
+
+        const body = parse(event.body ?? '') as SlackPayload;
+
+        if (body.command) {
+            return slashCommandHandle(body as SlackSlashCommandPayload);
+        }
+
+        // @todo: handle interactivity (e.g. context commands, modals)
+        // if (body.payload) {
+        //     const payload = JSON.parse(body.payload);
+        //     return handleInteractivity(payload);
+        // }
+
         return {
             statusCode: 200,
-            body: JSON.stringify({
-                message: jokeText,
-            }),
+            body: 'Still work in progress',
         };
     } catch (err) {
         console.log(err);
         return {
             statusCode: 500,
             body: JSON.stringify({
-                message: 'some error happened',
+                message: 'Internal server error',
             }),
         };
     }
