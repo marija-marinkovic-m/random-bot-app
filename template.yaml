@@ -6,7 +6,7 @@ Description: >
   Sample random-bot-app
 Globals:
   Function:
-    Timeout: 7
+    Timeout: 10
 
 Resources:
   RandomBotFunction:

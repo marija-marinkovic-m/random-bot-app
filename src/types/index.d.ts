@@ -81,6 +81,7 @@ type ModalArgs = {
         question: string;
         kingWen: number;
         change: number[];
+        title: string;
     };
 };
 

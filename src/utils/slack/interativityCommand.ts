@@ -19,11 +19,11 @@ export async function interactionHandle(payload: SlackModalPayload) {
                 submitter: payload.user.name,
             });
 
-            const noteText = note ? `and left a note:\n>${note}.` : 'and left no note.';
+            const noteText = note ? `In the aftermath was noted:\n>${note}.` : 'No comment 😳';
 
             await slackApi('chat.postMessage', {
                 channel: process.env.CHANNEL_GENERAL_ID,
-                text: `Oh dang, y’all! :eyes: <@${payload.user.id}> just started received this magical message from a <@RandomOracle> ${noteText}\n\n...discuss.`,
+                text: `Oh dang, y’all! :eyes: <@${payload.user.id}> just received this magical 🔮 message from a <@RandomOracle> \`${metaData.title}\`${noteText}\n\n...discuss.`,
             });
             break;
 

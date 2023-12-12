@@ -7,9 +7,8 @@ import { blocks, modal } from './blocks';
 export async function slashCommandHandle(payload: SlackSlashCommandPayload): Promise<APIGatewayProxyResult> {
     switch (payload.command) {
         case '/ask':
-            const question = payload.text || 'General question';
             const oracle = generateHexagram();
-            const reading = await getHexagramDetail(oracle.kingWen, [3, 5]);
+            const reading = await getHexagramDetail(oracle.kingWen, oracle.change);
 
             if (!reading) {
                 return {
@@ -36,8 +35,9 @@ export async function slashCommandHandle(payload: SlackSlashCommandPayload): Pro
                         }),
                     ],
                     metadata: {
-                        question,
+                        question: payload.text || 'General question',
                         kingWen: reading.kingWen,
+                        title: reading.title,
                         change: oracle.change || [],
                     },
                 }),
