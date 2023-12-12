@@ -1,6 +1,6 @@
 {
   "name": "random-bot-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Yarrow stalk bot app sample for NodeJS",
   "main": "app.js",
   "repository": "https://github.com/marija-marinkovic-m/random-bot-app",
