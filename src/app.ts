@@ -2,20 +2,19 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { parse } from 'querystring';
 import { slashCommandHandle } from './utils/slack/slashCommand';
 import { interactionHandle } from './utils/slack/interativityCommand';
+import { verifySlackRequest } from './utils/slack/api';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
         console.log(event.body);
-        // @todo: uncomment this
-        // const valid = verifySlackRequest(event);
-        // if (!valid) {
-        //     console.error('invalid request');
-
-        //     return {
-        //         statusCode: 400,
-        //         body: 'invalid request',
-        //     };
-        // }
+        const valid = verifySlackRequest(event);
+        if (!valid) {
+            console.error('invalid request');
+            return {
+                statusCode: 400,
+                body: 'invalid request',
+            };
+        }
 
         const body = parse(event.body ?? '') as SlackPayload;
 

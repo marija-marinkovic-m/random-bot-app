@@ -1,11 +1,14 @@
 import { saveReading } from '../notion/questionsTable';
 import { slackApi } from './api';
 
+const STORE_ACTION_ID = 'response-and-store-reading-modal';
+const NUDGE_ACTION_ID = 'ask-oracle-nudge';
+
 export async function interactionHandle(payload: SlackModalPayload) {
     const callback_id = payload.callback_id ?? payload.view.callback_id;
 
     switch (callback_id) {
-        case 'response-and-store-reading-modal':
+        case STORE_ACTION_ID:
             const data = payload.view.state.values;
             const metaData: ModalArgs['metadata'] = JSON.parse(payload.view.private_metadata);
 
@@ -23,11 +26,11 @@ export async function interactionHandle(payload: SlackModalPayload) {
 
             await slackApi('chat.postMessage', {
                 channel: process.env.CHANNEL_GENERAL_ID,
-                text: `Oh dang, y’all! :eyes: <@${payload.user.id}> just received this magical 🔮 message from a <@RandomOracle> \`${metaData.title}\`${noteText}\n\n...discuss.`,
+                text: `Oh dang, y’all! :eyes: <@${payload.user.id}> just received this magical 🔮 message from a <@RandomOracle>\n${metaData.title}\n\n${noteText}\n...discuss...`,
             });
             break;
 
-        case 'ask-oracle-nudge':
+        case NUDGE_ACTION_ID:
             const channel = payload.channel?.id;
             const user_id = payload.user.id;
             const thread_ts = payload.message.thread_ts ?? payload.message.ts;
@@ -35,7 +38,7 @@ export async function interactionHandle(payload: SlackModalPayload) {
             await slackApi('chat.postMessage', {
                 channel,
                 thread_ts,
-                text: `Hey <@${user_id}>, this statement could be run against Random Oracle. Run the \`/ask\` slash command to start one!`,
+                text: `Hey <@${user_id}>, I'm an expert in this topic. Run the \`/ask\` slash command to start one! :crystal_ball:`,
             });
 
             break;

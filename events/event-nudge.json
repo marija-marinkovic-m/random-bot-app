@@ -1,0 +1,4 @@
+{
+  "httpMethod": "POST",
+  "body": "payload=ask-oracle-nudge&token=xyz&team_id=xyz&team_domain=kultivista.com&channel_id=xyz&channel_name=general&user_id=xyz&user_name=marija.marinkovic.m&api_app_id=xyz&is_enterprise_install=false&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2Fxyz%xyz%xyz&trigger_id=xyz"
+}
