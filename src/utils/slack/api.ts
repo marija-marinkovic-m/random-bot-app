@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent } from 'aws-lambda';
-import { createHmac } from 'node:crypto';
+import { createHmac } from 'crypto';
 
 export async function slackApi(endpoint: SlackApiEndpoint, body: any) {
     const res = await fetch(`https://slack.com/api/${endpoint}`, {
@@ -27,7 +27,7 @@ export function verifySlackRequest(request: APIGatewayProxyEvent) {
 
         const hash = createHmac('sha256', secret).update(`v0:${timestamp}:${request.body}`).digest('hex');
 
-        return `v0=${hash}` === signature;
+        return `v0:${hash}` === signature;
     } catch (err) {
         console.error(err);
         return false;
