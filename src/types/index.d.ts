@@ -77,6 +77,11 @@ type ModalArgs = {
     title: string;
     submit_text?: string;
     blocks: SlackBlock[];
+    metadata: {
+        question: string;
+        kingWen: number;
+        change: number[];
+    };
 };
 
 type SlackModalPayload = {
@@ -108,9 +113,9 @@ type SlackModalPayload = {
         team_id: string;
         type: string;
         blocks: SlackBlock[];
-        private_metadata: string;
+        private_metadata: any;
         callback_id: string;
-        state: FoodOpinionModalState;
+        state: any;
         hash: string;
         title: {
             type: 'plain_text';

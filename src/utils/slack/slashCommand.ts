@@ -2,9 +2,9 @@ import { APIGatewayProxyResult } from 'aws-lambda';
 import { slackApi } from './api';
 import { generateHexagram } from '../oracle';
 import { getHexagramDetail } from '../notion/hexagramsTable';
-import { saveReading } from '../notion/questionsTable';
+import { blocks, modal } from './blocks';
 
-export async function createResponse(question: string): Promise<{ oracle: any; reading: Hexagram }> {
+export async function createResponse(): Promise<Hexagram & { change: number[] }> {
     const oracle = generateHexagram();
     const reading = await getHexagramDetail(oracle.kingWen, [3, 5]);
 
@@ -12,31 +12,47 @@ export async function createResponse(question: string): Promise<{ oracle: any; r
         throw new Error('Failed to get hexagram detail');
     }
 
-    await saveReading({
-        question,
-        note: 'NA',
-        kingWen: oracle.kingWen,
-        change: oracle.change || [],
-        submitter: '@bySlack',
-    });
-
-    return { oracle, reading };
+    return { ...reading, change: oracle.change || [] };
 }
 
 export async function slashCommandHandle(payload: SlackSlashCommandPayload): Promise<APIGatewayProxyResult> {
     switch (payload.command) {
         case '/ask':
-            const { reading } = await createResponse(payload.text || 'test');
-            const response = await slackApi('chat.postMessage', {
-                channel: payload.channel_id,
-                text: `*${reading.title}*\n${reading.chars}\n\n${reading.judgement}\n\n`,
-            });
+            const question = payload.text || 'General question';
+            const reading = await createResponse();
+
+            const response = await slackApi(
+                'views.open',
+                modal({
+                    id: 'response-and-store-reading-modal',
+                    title: 'Oracle Says...',
+                    trigger_id: payload.trigger_id,
+                    blocks: [
+                        blocks.section({
+                            text: `_New message for <@${payload.user_name}>_\n>*${reading.chars} • ${reading.title}*\n>${reading.judgement}\n\nRead more: <${reading.url}|${reading.title}>`,
+                        }),
+                        blocks.input({
+                            id: 'note',
+                            label: 'Note',
+                            placeholder: 'Example: This one is for my friend',
+                            hint: 'In case you want to store reading, please leave a note',
+                        }),
+                    ],
+                    metadata: {
+                        question,
+                        kingWen: reading.kingWen,
+                        change: reading.change,
+                    },
+                }),
+            );
 
             if (!response.ok) {
-                console.log(response);
+                return {
+                    statusCode: 200,
+                    body: 'Failed to send message',
+                };
             }
             break;
-
         default:
             return {
                 statusCode: 200,

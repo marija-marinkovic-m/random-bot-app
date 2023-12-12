@@ -6,7 +6,7 @@ Description: >
   Sample random-bot-app
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 7
 
 Resources:
   RandomBotFunction:
@@ -35,6 +35,7 @@ Resources:
           NOTION_SECRET: xyz
           NOTION_HEXAGRAMS_TABLE_ID: xyz
           NOTION_QUESTIONS_TABLE_ID: xyz
+          CHANNEL_GENERAL_ID: xyz
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:

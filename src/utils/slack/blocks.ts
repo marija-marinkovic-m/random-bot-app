@@ -61,3 +61,23 @@ export const blocks = {
         };
     },
 };
+
+export function modal({ trigger_id, id, title, submit_text = '💾 Save Reading', blocks, metadata }: ModalArgs) {
+    return {
+        trigger_id,
+        view: {
+            type: 'modal',
+            callback_id: id,
+            title: {
+                type: 'plain_text',
+                text: title,
+            },
+            submit: {
+                type: 'mrkdwn',
+                text: submit_text,
+            },
+            blocks,
+        },
+        private_metadata: metadata,
+    };
+}

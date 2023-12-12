@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { parse } from 'querystring';
 import { slashCommandHandle } from './utils/slack/slashCommand';
+import { interactionHandle } from './utils/slack/interativityCommand';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
@@ -22,11 +23,10 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             return slashCommandHandle(body as SlackSlashCommandPayload);
         }
 
-        // @todo: handle interactivity (e.g. context commands, modals)
-        // if (body.payload) {
-        //     const payload = JSON.parse(body.payload);
-        //     return handleInteractivity(payload);
-        // }
+        if (body.payload) {
+            const payload = JSON.parse(body.payload);
+            return interactionHandle(payload);
+        }
 
         return {
             statusCode: 200,
