@@ -1,4 +1,4 @@
-# random-bot-app
+# RandomBotApp
 
 <p align="center">
   <img src="./assets/ball.jpeg" alt="Logo" width="125px" />
