@@ -7,7 +7,7 @@ export async function interactionHandle(payload: SlackModalPayload) {
     switch (callback_id) {
         case 'response-and-store-reading-modal':
             const data = payload.view.state.values;
-            const metaData: ModalArgs['metadata'] = payload.view.private_metadata;
+            const metaData: ModalArgs['metadata'] = JSON.parse(payload.view.private_metadata);
 
             const note = data.note_block.note.value;
 

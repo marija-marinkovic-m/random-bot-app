@@ -4,22 +4,19 @@ import { generateHexagram } from '../oracle';
 import { getHexagramDetail } from '../notion/hexagramsTable';
 import { blocks, modal } from './blocks';
 
-export async function createResponse(): Promise<Hexagram & { change: number[] }> {
-    const oracle = generateHexagram();
-    const reading = await getHexagramDetail(oracle.kingWen, [3, 5]);
-
-    if (!reading) {
-        throw new Error('Failed to get hexagram detail');
-    }
-
-    return { ...reading, change: oracle.change || [] };
-}
-
 export async function slashCommandHandle(payload: SlackSlashCommandPayload): Promise<APIGatewayProxyResult> {
     switch (payload.command) {
         case '/ask':
             const question = payload.text || 'General question';
-            const reading = await createResponse();
+            const oracle = generateHexagram();
+            const reading = await getHexagramDetail(oracle.kingWen, [3, 5]);
+
+            if (!reading) {
+                return {
+                    statusCode: 200,
+                    body: 'Failed to get reading',
+                };
+            }
 
             const response = await slackApi(
                 'views.open',
@@ -41,15 +38,16 @@ export async function slashCommandHandle(payload: SlackSlashCommandPayload): Pro
                     metadata: {
                         question,
                         kingWen: reading.kingWen,
-                        change: reading.change,
+                        change: oracle.change || [],
                     },
                 }),
             );
 
             if (!response.ok) {
+                console.log(response);
                 return {
                     statusCode: 200,
-                    body: 'Failed to send message',
+                    body: 'Failed to open dialog',
                 };
             }
             break;

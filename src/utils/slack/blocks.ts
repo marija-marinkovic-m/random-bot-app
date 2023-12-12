@@ -73,11 +73,12 @@ export function modal({ trigger_id, id, title, submit_text = '💾 Save Reading'
                 text: title,
             },
             submit: {
-                type: 'mrkdwn',
+                type: 'plain_text',
                 text: submit_text,
+                emoji: true,
             },
             blocks,
+            private_metadata: JSON.stringify(metadata),
         },
-        private_metadata: metadata,
     };
 }
