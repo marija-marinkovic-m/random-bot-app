@@ -9,6 +9,60 @@ interface IHexagram {
     change?: number[];
 }
 
+export const resolveSeparation: (numberOfStalks: number) => 3 | 2 = (numberOfStalks: number) => {
+    const observer = 1;
+    const westPile = Math.floor(Math.random() * numberOfStalks);
+    const eastPile = numberOfStalks - westPile - observer;
+
+    const westRemainder = westPile % 4 || 4;
+    const eastRemainder = eastPile % 4 || 4;
+
+    return observer + westRemainder + eastRemainder > 5 ? 2 : 3;
+};
+
+const resolveLine: () => Omit<ILine, 'position'> = () => {
+    let numberOfStalks = 49;
+
+    const draws = Array.from({ length: 3 }, () => {
+        const draw = resolveSeparation(numberOfStalks);
+        numberOfStalks -= draw;
+        return draw;
+    });
+
+    switch (draws.reduce((acc, curr) => acc + curr, 0)) {
+        case 6:
+            return { old: true, binary: 0 }; // old yin
+        case 7:
+            return { old: false, binary: 1 }; // young yang
+        case 8:
+            return { old: false, binary: 0 }; // young yin
+        case 9:
+            return { old: true, binary: 1 }; // old yang
+        default:
+            throw new Error('Something went wrong!');
+    }
+};
+
+export const generateHexagram: () => IHexagram = () => {
+    const hexagram: ILine[] = [];
+    for (let position = 1; position < 7; position++) {
+        const line = resolveLine();
+        hexagram.push({
+            ...line,
+            position,
+        });
+    }
+
+    const binary = hexagram.reduce((acc: string, curr: ILine) => acc + curr.binary, '');
+    const kingWen = map[binary as keyof typeof map];
+    const change = hexagram.filter((line) => line.old).map((line) => line.position);
+
+    return {
+        kingWen,
+        change,
+    };
+};
+
 const map = {
     '100000': 24,
     '100001': 27,
@@ -74,58 +128,4 @@ const map = {
     '010011': 59,
     '001100': 62,
     '010101': 64,
-};
-
-export const resolveSeparation: (numberOfStalks: number) => 3 | 2 = (numberOfStalks: number) => {
-    const observer = 1;
-    const westPile = Math.floor(Math.random() * numberOfStalks);
-    const eastPile = numberOfStalks - westPile - observer;
-
-    const westRemainder = westPile % 4 || 4;
-    const eastRemainder = eastPile % 4 || 4;
-
-    return observer + westRemainder + eastRemainder > 5 ? 2 : 3;
-};
-
-const resolveLine: () => Omit<ILine, 'position'> = () => {
-    let numberOfStalks = 49;
-
-    const draws = Array.from({ length: 3 }, () => {
-        const draw = resolveSeparation(numberOfStalks);
-        numberOfStalks -= draw;
-        return draw;
-    });
-
-    switch (draws.reduce((acc, curr) => acc + curr, 0)) {
-        case 6:
-            return { old: true, binary: 0 }; // old yin
-        case 7:
-            return { old: false, binary: 1 }; // young yang
-        case 8:
-            return { old: false, binary: 0 }; // young yin
-        case 9:
-            return { old: true, binary: 1 }; // old yang
-        default:
-            throw new Error('Something went wrong!');
-    }
-};
-
-export const generateHexagram: () => IHexagram = () => {
-    const hexagram: ILine[] = [];
-    for (let position = 1; position < 7; position++) {
-        const line = resolveLine();
-        hexagram.push({
-            ...line,
-            position,
-        });
-    }
-
-    const binary = hexagram.reduce((acc: string, curr: ILine) => acc + curr.binary, '');
-    const kingWen = map[binary as keyof typeof map];
-    const change = hexagram.filter((line) => line.old).map((line) => line.position);
-
-    return {
-        kingWen,
-        change,
-    };
 };
