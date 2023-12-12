@@ -1,9 +1,9 @@
 {
   "name": "random-bot-app",
   "version": "1.0.0",
-  "description": "random bot app sample for NodeJS",
+  "description": "Yarrow stalk bot app sample for NodeJS",
   "main": "app.js",
-  "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
+  "repository": "https://github.com/marija-marinkovic-m/random-bot-app",
   "author": "Marija Marinkovic <",
   "license": "MIT",
   "scripts": {
