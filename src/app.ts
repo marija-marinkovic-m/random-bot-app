@@ -7,7 +7,6 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         console.log(event.body);
         // @todo: uncomment this
         // const valid = verifySlackRequest(event);
-
         // if (!valid) {
         //     console.error('invalid request');
 

@@ -155,3 +155,28 @@ type SelectBlockArgs = {
         value: string;
     }[];
 } & BlockArgs;
+
+type HexagramLine = {
+    position: number;
+    value: number;
+    text: string;
+};
+
+type Hexagram = {
+    kingWen: number;
+    title: string;
+    chars: string;
+    uniCode: number;
+    judgement: string;
+    lines: string;
+    url: string;
+};
+
+type OracleItem = {
+    question: string;
+    submitter: string;
+    note: string;
+    kingWen: number;
+    change: number[];
+    date?: string;
+};

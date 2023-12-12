@@ -32,6 +32,9 @@ Resources:
         Variables:
           SLACK_BOT_OAUTH_TOKEN: xyz
           SLACK_SIGNIN_SECRET: xyz
+          NOTION_SECRET: xyz
+          NOTION_HEXAGRAMS_TABLE_ID: xyz
+          NOTION_QUESTIONS_TABLE_ID: xyz
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
